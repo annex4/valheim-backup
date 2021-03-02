@@ -1,2 +1,5 @@
 terraform.tfvars
 infrastructure/build/*
+infrastructure/.terraform
+infrastructure/terraform.tfstate*
+infrastructure/terraform.txt

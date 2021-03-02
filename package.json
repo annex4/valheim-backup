@@ -1,0 +1,12 @@
+{
+  "name": "valheim-backup",
+  "version": "1.0.0",
+  "description": "Backs up a Valheim world to S3 using the Pterodactyl API.",
+  "main": "src/index.js",
+  "scripts": {
+    "build": "npm prune --production && del /q \"infrastructure/build\" && 7z a \"infrastructure/build/lambda.zip\" src/*",
+    "buildt": "npm prune --production && 7z a lambda.zip src/*"
+  },
+  "author": "",
+  "license": "ISC"
+}
