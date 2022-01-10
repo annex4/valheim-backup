@@ -1,0 +1,7 @@
+server_id = "this_is_my_server_id"
+api_key = "this_is_my_api_key"
+host = "this_is_where_my_server_is_hosted"
+bucket = "this_is_my_s3_bucket_name"
+world = "this_is_the_name_of_my_world"
+account = "this_is_my_AWS_account_id"
+region = "this_is_the_AWS_region_i_want_to_use"
