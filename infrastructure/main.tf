@@ -4,7 +4,7 @@ provider "aws" {
 
 resource "aws_lambda_function" "this" {
   filename      = "./build/lambda.zip"
-  function_name = "valheim_backup"
+  function_name = "valheim_backup_${var.world}"
   role          = aws_iam_role.this.arn
   handler       = "src/index.handler"
 
@@ -43,7 +43,6 @@ resource "aws_iam_role" "this" {
   assume_role_policy = data.aws_iam_policy_document.lambda_access.json
 }
 
-#region Logging
 data "aws_iam_policy_document" "logging" {
   statement {
     actions = [
@@ -70,9 +69,7 @@ resource "aws_cloudwatch_log_group" "logging" {
   name              = "/aws/lambda/${aws_lambda_function.this.function_name}"
   retention_in_days = 14
 }
-#endregion
 
-#region S3
 data "aws_iam_policy_document" "s3" {
   statement {
     effect = "Allow"
@@ -91,14 +88,12 @@ resource "aws_iam_role_policy" "s3" {
   role   = aws_iam_role.this.id
   policy = data.aws_iam_policy_document.s3.json
 }
-#endregion
 
 resource "aws_s3_bucket" "primary" {
-  bucket        = "valheim-backups-kdub"
+  bucket        = var.bucket
   acl           = "private"
   force_destroy = true
 
-  // TODO Fix Origin
   cors_rule {
     allowed_headers = ["*"]
     allowed_methods = ["HEAD", "PUT", "POST", "GET", "DELETE"]
@@ -118,4 +113,23 @@ resource "aws_s3_bucket" "primary" {
       expired_object_delete_marker = false
     }
   }
+}
+
+resource "aws_cloudwatch_event_rule" "this" {
+    name = "backup_${var.world}_to_${var.bucket}"
+    description = "Runs a backup of the Valheim World: ${var.world}"
+    schedule_expression = "cron(45 7 * * ? *)"
+}
+
+resource "aws_cloudwatch_event_target" "this" {
+  rule = aws_cloudwatch_event_rule.this.name
+  arn  = aws_lambda_function.this.arn
+}
+
+resource "aws_lambda_permission" "invoke_lambda" {
+  statement_id = "AllowRuleExecution-${aws_lambda_function.this.function_name}"
+  action = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.this.function_name
+  principal = "events.amazonaws.com"
+  source_arn = aws_cloudwatch_event_rule.this.arn
 }
