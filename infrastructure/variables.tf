@@ -26,3 +26,11 @@ variable "region" {
 variable "account" {
     type = string
 }
+
+variable "webhook_id" {
+    type = string
+}
+
+variable "webhook_token" {
+    type = string
+}

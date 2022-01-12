@@ -23,6 +23,8 @@ resource "aws_lambda_function" "this" {
       BUCKET    = var.bucket
       WORLD     = var.world
       REGION    = var.region
+      WEBHOOK_ID = var.webhook_id
+      WEBHOOK_TOKEN = var.webhook_token
     }
   }
 }
@@ -75,7 +77,8 @@ data "aws_iam_policy_document" "s3" {
     effect = "Allow"
     actions = [
       "s3:PutObject",
-      "s3:PutObjectAcl"
+      "s3:PutObjectAcl",
+      "s3:GetObject"
     ]
     resources = [
       "arn:aws:s3:::${var.bucket}/backups/*",
@@ -92,7 +95,7 @@ resource "aws_iam_role_policy" "s3" {
 resource "aws_s3_bucket" "primary" {
   bucket        = var.bucket
   acl           = "private"
-  force_destroy = true
+  force_destroy = false
 
   cors_rule {
     allowed_headers = ["*"]
