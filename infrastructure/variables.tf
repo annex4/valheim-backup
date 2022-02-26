@@ -1,8 +1,8 @@
-variable "server_id" {
+variable "username" {
     type = string
 }
 
-variable "api_key" {
+variable "password" {
     type = string
 }
 

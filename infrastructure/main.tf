@@ -6,7 +6,7 @@ resource "aws_lambda_function" "this" {
   filename      = "./build/lambda.zip"
   function_name = "valheim_backup_${var.world}"
   role          = aws_iam_role.this.arn
-  handler       = "src/index.handler"
+  handler       = "dist/index.handler"
 
   memory_size = 512
   timeout     = 30
@@ -17,8 +17,8 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = {
-      SERVER_ID = var.server_id
-      API_KEY   = var.api_key
+      USERNAME = var.username
+      PASSWORD   = var.password
       HOST      = var.host
       BUCKET    = var.bucket
       WORLD     = var.world

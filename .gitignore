@@ -3,3 +3,5 @@ infrastructure/build/*
 infrastructure/.terraform
 infrastructure/terraform.tfstate*
 infrastructure/terraform.txt
+dist/*
+node_modules/*
